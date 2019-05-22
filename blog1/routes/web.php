@@ -1,0 +1,144 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+//前台首页
+Route::get('/','IndexController@index');
+//注册
+Route::get('/login/reg','LoginController@reg');
+//发送邮件
+Route::post('/login/send','LoginController@send');
+//验证邮箱是否存在
+Route::post('/login/checkname','LoginController@checkname');
+//注册信息入库
+Route::post('/login/zc','LoginController@zc');
+//登录
+Route::get('/login/login','LoginController@login');
+//处理登录
+Route::post('/login/loginin','LoginController@loginin');
+//退出登录
+Route::get('/login/loginout','LoginController@loginout');
+//商品详情
+Route::get('goods/{goods_id}','GoodsController@goods');
+//获取分类下的商品
+Route::get('/cate/{cate_id}','GoodsController@cateInfo');
+//加入购物车
+Route::post('car/{goods_id}','GoodsController@car');
+//购物车列表
+Route::get('/carlist','GoodsController@carlist');
+//更改购买数量
+Route::post('checkBuyNum','GoodsController@checkBuyNum');
+//商品总价
+Route::post('countTotal','GoodsController@countTotal');
+//收获地址页面
+Route::get('/address','GoodsController@address');
+//三级联动
+Route::post('getArea','GoodsController@getArea');
+//添加收货地址
+Route::post('addAddress','GoodsController@addAddress');
+//下单判断是否登录
+Route::get('/pay/isLogin','PayController@isLogin');
+//订单列表
+Route::get('/pay/paylist','PayController@paylist');
+//结算
+Route::post('/pay/jiesuan','PayController@jiesuan');
+//支付宝
+Route::get('/pay/payMoney','PayController@payMoney');
+//支付同步通知
+Route::get('/pay/success','PayController@paySuccess');
+//支付异步通知
+Route::post('/pay/alipay','PayController@alipay');
+
+
+//周考
+////列表
+Route::get('/list/index','ListController@index');
+////详情页
+Route::get('/list/xq','ListController@xq');
+////删除
+Route::get('list/del/{goods_id}','ListController@del');
+////修改
+Route::get('list/edit/{goods_id}','ListController@edit');
+////处理修改
+Route::post('list/doedit','ListController@doedit');
+
+////微信绑定
+Route::prefix('wx')->group(function(){
+    Route::any('/index','wx\\WechatController@valid');
+});
+
+////后台
+Route::prefix('admin')->middleware('checkLogin')->group(function(){
+    //后台首页
+    Route::any('/','wx\\SubscribeController@index');
+    //添加首次关注回复信息
+    Route::any('/subscribe/add','wx\\SubscribeController@add');
+    Route::any('subscribe/doadd','wx\\SubscribeController@doadd');
+    //修改首次关注回复类型
+    Route::any('/subscribe/responseType','wx\\SubscribeController@TypeResponse');
+    Route::any('/subscribe/setResponseType','wx\\SubscribeController@setResponseType');
+    //素材管理
+    ////素材展示
+    Route::any('materiallist','wx\\MaterialController@index');
+    ////删除
+    Route::any('materiallist/del','wx\\MaterialController@del');
+    //群发管理
+    Route::any('groupsend','wx\\GroupSendController@index');
+    ////发送群发
+    Route::any('group/send','wx\\GroupSendController@send');
+    //创建标签
+    ////添加标签
+    Route::any('taghtml','wx\\GroupSendController@tagHtml');
+    Route::any('taghtml/addtag','wx\\GroupSendController@addTag');
+    ////根据openid进行群发
+    Route::any('taghtml/tagbyuser','wx\\GroupSendController@tagByUser');
+    Route::any('taghtml/dotagbyuser','wx\\GroupSendController@doTagByUser');
+    ////根据标签群发页面
+    Route::any('taghtml/tagsendhtml','wx\\GroupSendController@sendHtml');
+    ////根据标签进行群发
+    Route::any('taghtml/sendbytag','wx\\GroupSendController@sendByTag');
+    ////用户信息
+    Route::any('taghtml/xinxi','wx\\GroupSendController@xinxi');
+    //自定义模板
+    ////自定义模板的添加
+    Route::any('menu/menuadd','wx\\MenuController@menuAdd');
+    Route::any('menu/doadd','wx\\MenuController@doAdd');
+    ////自定义模板的展示
+    Route::any('menu/menuindex','wx\\MenuController@menuIndex');
+    ////获取二级分类信息
+    Route::any('menu/getmenu/{id}','wx\\MenuController@getMenu');
+    ////删除自定义模板信息
+    Route::any('menu/del','wx\\MenuController@del');
+    ////修改自定义模板信息
+    Route::any('menu/update/{id}','wx\\MenuController@update');
+    Route::any('menu/doupdate','wx\\MenuController@doupdate');
+    //自定义菜单发布
+    Route::any('menu/release','wx\\MenuController@release');
+    //个性化菜单发布
+    Route::any('menu/menuset','wx\\MenuController@menuset');
+    //获取上传的自定义菜单
+    Route::any('menu/releaselist','wx\\MenuController@releaseList');
+    //删除个性化菜单
+    Route::any('menu/delmenu','wx\\MenuController@delmenu');
+});
+//后台同步素材
+Route::any('/admin/materiallist/{type}','wx\\MaterialController@getList');
+//微信登录
+Route::any('/admin/wxlogin','wx\\WxController@wxlogin');
+//按钮绑定本站用户
+Route::any('/admin/getcode','wx\\WxController@getCode');
+//url绑定本站用户
+Route::any('/admin/bind','wx\\WxController@bind');
+//后台登陆
+Route::prefix('login')->group(function(){
+    Route::any('/login1','wx\\LoginController@login');
+    Route::any('/dologin','wx\\LoginController@dologin');
+});
